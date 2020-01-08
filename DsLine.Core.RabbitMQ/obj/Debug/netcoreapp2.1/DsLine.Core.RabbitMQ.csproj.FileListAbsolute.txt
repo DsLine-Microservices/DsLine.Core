@@ -1,0 +1,6 @@
+C:\Users\frabr\source\repos\Dsl.Microservices\DsLine.Core\DsLine.Core.RabbitMQ\bin\Debug\netcoreapp2.1\DsLine.Core.RabbitMQ.deps.json
+C:\Users\frabr\source\repos\Dsl.Microservices\DsLine.Core\DsLine.Core.RabbitMQ\bin\Debug\netcoreapp2.1\DsLine.Core.RabbitMQ.dll
+C:\Users\frabr\source\repos\Dsl.Microservices\DsLine.Core\DsLine.Core.RabbitMQ\obj\Debug\netcoreapp2.1\DsLine.Core.RabbitMQ.csprojAssemblyReference.cache
+C:\Users\frabr\source\repos\Dsl.Microservices\DsLine.Core\DsLine.Core.RabbitMQ\obj\Debug\netcoreapp2.1\DsLine.Core.RabbitMQ.csproj.CoreCompileInputs.cache
+C:\Users\frabr\source\repos\Dsl.Microservices\DsLine.Core\DsLine.Core.RabbitMQ\obj\Debug\netcoreapp2.1\DsLine.Core.RabbitMQ.AssemblyInfoInputs.cache
+C:\Users\frabr\source\repos\Dsl.Microservices\DsLine.Core\DsLine.Core.RabbitMQ\obj\Debug\netcoreapp2.1\DsLine.Core.RabbitMQ.AssemblyInfo.cs
