@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\frabr\\source\\repos\\Dsl.Microservices\\DsLine.Core\\DsLine.Core.RabbitMQ\\DsLine.Core.RabbitMQ.csproj": {}
+    "C:\\Users\\frabr\\source\\repos\\DsLine-MicroservicesGIT\\DsLine.Core\\DsLine.Core.RabbitMQ\\DsLine.Core.RabbitMQ.csproj": {}
   },
   "projects": {
-    "C:\\Users\\frabr\\source\\repos\\Dsl.Microservices\\DsLine.Core\\DsLine.Core.RabbitMQ\\DsLine.Core.RabbitMQ.csproj": {
+    "C:\\Users\\frabr\\source\\repos\\DsLine-MicroservicesGIT\\DsLine.Core\\DsLine.Core.RabbitMQ\\DsLine.Core.RabbitMQ.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\frabr\\source\\repos\\Dsl.Microservices\\DsLine.Core\\DsLine.Core.RabbitMQ\\DsLine.Core.RabbitMQ.csproj",
+        "projectUniqueName": "C:\\Users\\frabr\\source\\repos\\DsLine-MicroservicesGIT\\DsLine.Core\\DsLine.Core.RabbitMQ\\DsLine.Core.RabbitMQ.csproj",
         "projectName": "DsLine.Core.RabbitMQ",
-        "projectPath": "C:\\Users\\frabr\\source\\repos\\Dsl.Microservices\\DsLine.Core\\DsLine.Core.RabbitMQ\\DsLine.Core.RabbitMQ.csproj",
+        "projectPath": "C:\\Users\\frabr\\source\\repos\\DsLine-MicroservicesGIT\\DsLine.Core\\DsLine.Core.RabbitMQ\\DsLine.Core.RabbitMQ.csproj",
         "packagesPath": "C:\\Users\\frabr\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\frabr\\source\\repos\\Dsl.Microservices\\DsLine.Core\\DsLine.Core.RabbitMQ\\obj\\",
+        "outputPath": "C:\\Users\\frabr\\source\\repos\\DsLine-MicroservicesGIT\\DsLine.Core\\DsLine.Core.RabbitMQ\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -45,11 +45,43 @@
               "target": "Package",
               "version": "[4.9.4, )"
             },
+            "Consul": {
+              "target": "Package",
+              "version": "[0.7.2.6, )"
+            },
             "Jaeger": {
               "target": "Package",
               "version": "[0.3.6, )"
             },
+            "Lockbox.Client": {
+              "target": "Package",
+              "version": "[2.0.2, )"
+            },
+            "Microsoft.AspNetCore.Hosting.Abstractions": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            },
             "Microsoft.AspNetCore.Http.Abstractions": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            },
+            "Microsoft.AspNetCore.HttpOverrides": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            },
+            "Microsoft.AspNetCore.Mvc.ApiExplorer": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            },
+            "Microsoft.AspNetCore.Mvc.Core": {
+              "target": "Package",
+              "version": "[2.2.5, )"
+            },
+            "Microsoft.AspNetCore.Mvc.DataAnnotations": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            },
+            "Microsoft.AspNetCore.Mvc.Formatters.Json": {
               "target": "Package",
               "version": "[2.2.0, )"
             },
@@ -58,6 +90,14 @@
               "version": "[3.1.0, )"
             },
             "Microsoft.Extensions.Configuration.Binder": {
+              "target": "Package",
+              "version": "[3.1.0, )"
+            },
+            "Microsoft.Extensions.Http": {
+              "target": "Package",
+              "version": "[3.1.0, )"
+            },
+            "Microsoft.Extensions.Options.ConfigurationExtensions": {
               "target": "Package",
               "version": "[3.1.0, )"
             },
