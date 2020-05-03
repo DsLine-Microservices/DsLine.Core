@@ -6,7 +6,7 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v3.0": {
-      "DsLine.Core.RabbitMQ/1.0.0": {
+      "DsLine.Core.RabbitMQ/1.0.34": {
         "dependencies": {
           "Autofac": "4.9.4",
           "Consul": "0.7.2.6",
@@ -1716,7 +1716,7 @@
     }
   },
   "libraries": {
-    "DsLine.Core.RabbitMQ/1.0.0": {
+    "DsLine.Core.RabbitMQ/1.0.34": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

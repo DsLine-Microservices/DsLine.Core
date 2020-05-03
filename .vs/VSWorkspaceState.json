@@ -1,0 +1,12 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\DsLine.Core.RabbitMQ",
+    "\\DsLine.Core.RabbitMQ\\Consul",
+    "\\DsLine.Core.RabbitMQ\\Fabio",
+    "\\DsLine.Core.RabbitMQ\\Mvc",
+    "\\DsLine.Core.RabbitMQ\\Type"
+  ],
+  "SelectedNode": "\\.gitignore",
+  "PreviewInSolutionExplorer": false
+}

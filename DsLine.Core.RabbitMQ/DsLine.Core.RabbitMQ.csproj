@@ -2,6 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
+    <PackageId>DsLine.Core.RabbitMQ</PackageId>
+    <Version>1.0.40</Version>
+    <Authors>DsLine</Authors>
+    <Company>GitHub</Company>
+    <PackageDescription>This package adds an Octocat!</PackageDescription>
+    <RepositoryUrl>https://github.com/DsLine-Microservices/DsLine.Core</RepositoryUrl>
+    <Description>Add list RabbitMq BusClient</Description>
   </PropertyGroup>
 
   <ItemGroup>

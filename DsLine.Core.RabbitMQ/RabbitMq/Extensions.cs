@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,6 +22,7 @@ using RawRabbit.Pipe.Middleware;
 
 namespace DsLine.Core.RabbitMQ
 {
+
     public static class Extensions
     {
         public static IBusSubscriber UseRabbitMq(this IApplicationBuilder app)
@@ -28,18 +30,27 @@ namespace DsLine.Core.RabbitMQ
 
         public static void AddRabbitMq(this ContainerBuilder builder)
         {
+            //builder.Register(context =>
+            //{
+            //    var configuration = context.Resolve<IConfiguration>();
+            //    var options = configuration.GetOptions<RabbitMqOptions>("rabbitMq");
+
+            //    return options;
+            //}).SingleInstance();
+
+            //builder.Register(context =>
+            //{
+            //    var configuration = context.Resolve<IConfiguration>();
+            //    var options = configuration.GetOptions<RawRabbitConfiguration>("rabbitMq");
+
+            //    return options;
+            //}).SingleInstance();
+
+
             builder.Register(context =>
             {
                 var configuration = context.Resolve<IConfiguration>();
-                var options = configuration.GetOptions<RabbitMqOptions>("rabbitMq");
-
-                return options;
-            }).SingleInstance();
-
-            builder.Register(context =>
-            {
-                var configuration = context.Resolve<IConfiguration>();
-                var options = configuration.GetOptions<RawRabbitConfiguration>("rabbitMq");
+                var options = configuration.GetOptions<List<RabbitMqOptions>>("ListRabbitMq");
 
                 return options;
             }).SingleInstance();
@@ -63,32 +74,50 @@ namespace DsLine.Core.RabbitMQ
 
         private static void ConfigureBus(ContainerBuilder builder)
         {
-            builder.Register<IInstanceFactory>(context =>
+            builder.Register(context =>
             {
-                var options = context.Resolve<RabbitMqOptions>();
-                var configuration = context.Resolve<RawRabbitConfiguration>();
-                var namingConventions = new CustomNamingConventions(options.Namespace);
-                var tracer = context.Resolve<ITracer>();
+                List<IInstanceFactory> instanceFactories = new List<IInstanceFactory>();
 
-                return RawRabbit.Instantiation.RawRabbitFactory.CreateInstanceFactory(new RawRabbitOptions
+              //  var options = context.Resolve<RabbitMqOptions>();
+              //  var configuration = context.Resolve<RawRabbitConfiguration>();
+                var listoptions = context.Resolve<List<RabbitMqOptions>>();
+              //  var namingConventions = new CustomNamingConventions(options.Namespace);
+                var tracer = context.Resolve<ITracer>();
+                if (listoptions != null)
                 {
-                    DependencyInjection = ioc =>
+                    foreach (var item in listoptions)
                     {
-                        ioc.AddSingleton(options);
-                        ioc.AddSingleton(configuration);
-                        ioc.AddSingleton<INamingConventions>(namingConventions);
-                        ioc.AddSingleton(tracer);
-                    },
-                    Plugins = p => p
-                        .UseAttributeRouting()
-                        .UseRetryLater()
-                        .UpdateRetryInfo()
-                        .UseMessageContext<CorrelationContext>()
-                        .UseContextForwarding()
-                        .UseJaeger(tracer)
-                });
+                        IInstanceFactory instanceFactory = RawRabbit.Instantiation.RawRabbitFactory.CreateInstanceFactory(new RawRabbitOptions
+                        {
+                            DependencyInjection = ioc =>
+                            {
+                                ioc.AddSingleton(item as RabbitMqOptions);
+                                ioc.AddSingleton(item as RawRabbitConfiguration);
+                                ioc.AddSingleton<INamingConventions>(new CustomNamingConventions(item.Namespace));
+                                ioc.AddSingleton(tracer);
+                                
+                            },
+                            Plugins = p => p
+                                .UseAttributeRouting()
+                                .UseRetryLater()
+                                .UpdateRetryInfo()
+                                .UseMessageContext<CorrelationContext>()
+                                .UseContextForwarding()
+                                .UseJaeger(tracer)
+                        });
+
+                        instanceFactories.Add(instanceFactory);
+                    }
+                }
+
+           
+                return instanceFactories;
             }).SingleInstance();
-            builder.Register(context => context.Resolve<IInstanceFactory>().Create());
+            builder.Register(context => { 
+                List<RawRabbit.IBusClient> busClients = new List<RawRabbit.IBusClient>();
+                context.Resolve<List<IInstanceFactory>>().ForEach(x => busClients.Add(x.Create()));
+                return busClients;
+                });
         }
 
         private class CustomNamingConventions : NamingConventions
@@ -112,7 +141,7 @@ namespace DsLine.Core.RabbitMQ
 
                 return string.IsNullOrWhiteSpace(@namespace) ? string.Empty : $"{@namespace}.";
             }
-            
+
             private static string GetNamespace(Type type, string defaultNamespace)
             {
                 var @namespace = type.GetCustomAttribute<MessageNamespaceAttribute>()?.Namespace ?? defaultNamespace;

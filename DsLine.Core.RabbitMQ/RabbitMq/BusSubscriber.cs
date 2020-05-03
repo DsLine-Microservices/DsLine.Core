@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using DsLine.Core.Handlers;
@@ -19,34 +21,50 @@ namespace DsLine.Core.RabbitMQ
     public class BusSubscriber : IBusSubscriber
     {
         private readonly ILogger _logger;
-        private readonly IBusClient _busClient;
-        private readonly IServiceProvider _serviceProvider;        
+        //private readonly IBusClient _busClient;
+        private readonly List<IBusClient> _listBusClient;
+        private readonly IServiceProvider _serviceProvider;
         private readonly ITracer _tracer;
-        private readonly int _retries;
-        private readonly int _retryInterval;
+        private readonly int _retries=3;
+        private readonly int _retryInterval=2;
 
         public BusSubscriber(IApplicationBuilder app)
         {
             _logger = app.ApplicationServices.GetService<ILogger<BusSubscriber>>();
             _serviceProvider = app.ApplicationServices.GetService<IServiceProvider>();
-            _busClient = _serviceProvider.GetService<IBusClient>();
+           /// _busClient = _serviceProvider.GetService<IBusClient>();
+            _listBusClient = _serviceProvider.GetService<List<IBusClient>>();
             _tracer = _serviceProvider.GetService<ITracer>();
             var options = _serviceProvider.GetService<RabbitMqOptions>();
-            _retries = options.Retries >= 0 ? options.Retries : 3;
-            _retryInterval = options.RetryInterval > 0 ? options.RetryInterval : 2;
+    //        _retries = options.Retries >= 0 ? options.Retries : 3;
+        //    _retryInterval = options.RetryInterval > 0 ? options.RetryInterval : 2;
         }
 
         public IBusSubscriber SubscribeCommand<TCommand>(string @namespace = null, string queueName = null,
             Func<TCommand, DShopException, IRejectedEvent> onError = null)
             where TCommand : ICommand
         {
-            _busClient.SubscribeAsync<TCommand, CorrelationContext>(async (command, correlationContext) =>
-            {
-                var commandHandler = _serviceProvider.GetService<ICommandHandler<TCommand>>();
 
-                return await TryHandleAsync(command, correlationContext,
-                    () => commandHandler.HandleAsync(command, correlationContext), onError);
-            });
+
+            foreach (var item in _listBusClient)
+            {
+                item.SubscribeAsync<TCommand, CorrelationContext>(async (command, correlationContext) =>
+                {
+                    var commandHandler = _serviceProvider.GetService<ICommandHandler<TCommand>>();
+
+                    return await TryHandleAsync(command, correlationContext,
+                        () => commandHandler.HandleAsync(command, correlationContext), onError);
+                });
+            }
+
+
+            //_busClient.SubscribeAsync<TCommand, CorrelationContext>(async (command, correlationContext) =>
+            //{
+            //    var commandHandler = _serviceProvider.GetService<ICommandHandler<TCommand>>();
+
+            //    return await TryHandleAsync(command, correlationContext,
+            //        () => commandHandler.HandleAsync(command, correlationContext), onError);
+            //});
 
             return this;
         }
@@ -55,13 +73,24 @@ namespace DsLine.Core.RabbitMQ
             Func<TEvent, DShopException, IRejectedEvent> onError = null)
             where TEvent : IEvent
         {
-            _busClient.SubscribeAsync<TEvent, CorrelationContext>(async (@event, correlationContext) =>
-            {
-                var eventHandler = _serviceProvider.GetService<IEventHandler<TEvent>>();
 
-                return await TryHandleAsync(@event, correlationContext,
-                    () => eventHandler.HandleAsync(@event, correlationContext), onError);
-            });
+            foreach (var item in _listBusClient)
+            {
+                item.SubscribeAsync<TEvent, CorrelationContext>(async (@event, correlationContext) =>
+                {
+                    var eventHandler = _serviceProvider.GetService<IEventHandler<TEvent>>();
+
+                    return await TryHandleAsync(@event, correlationContext,
+                        () => eventHandler.HandleAsync(@event, correlationContext), onError);
+                });
+            }
+            //_busClient.SubscribeAsync<TEvent, CorrelationContext>(async (@event, correlationContext) =>
+            //{
+            //    var eventHandler = _serviceProvider.GetService<IEventHandler<TEvent>>();
+
+            //    return await TryHandleAsync(@event, correlationContext,
+            //        () => eventHandler.HandleAsync(@event, correlationContext), onError);
+            //});
 
             return this;
         }
@@ -76,7 +105,7 @@ namespace DsLine.Core.RabbitMQ
             var retryPolicy = Policy
                 .Handle<Exception>()
                 .WaitAndRetryAsync(_retries, i => TimeSpan.FromSeconds(_retryInterval));
-            
+
             var messageName = message.GetType().Name;
 
             return await retryPolicy.ExecuteAsync<Acknowledgement>(async () =>
@@ -89,7 +118,7 @@ namespace DsLine.Core.RabbitMQ
                 using (scope)
                 {
                     var span = scope.Span;
-                    
+
                     try
                     {
                         var retryMessage = currentRetry == 0
@@ -98,7 +127,7 @@ namespace DsLine.Core.RabbitMQ
 
                         var preLogMessage = $"Handling a message: '{messageName}' " +
                                       $"with correlation id: '{correlationContext.Id}'. {retryMessage}";
-                        
+
                         _logger.LogInformation(preLogMessage);
                         span.Log(preLogMessage);
 
@@ -117,11 +146,11 @@ namespace DsLine.Core.RabbitMQ
                         _logger.LogError(exception, exception.Message);
                         span.Log(exception.Message);
                         span.SetTag(Tags.Error, true);
-                        
+
                         if (exception is DShopException dShopException && onError != null)
                         {
                             var rejectedEvent = onError(message, dShopException);
-                            await _busClient.PublishAsync(rejectedEvent, ctx => ctx.UseMessageContext(correlationContext));
+                            await _listBusClient.First().PublishAsync(rejectedEvent, ctx => ctx.UseMessageContext(correlationContext));
                             _logger.LogInformation($"Published a rejected event: '{rejectedEvent.GetType().Name}' " +
                                                    $"for the message: '{messageName}' with correlation id: '{correlationContext.Id}'.");
 
@@ -137,7 +166,7 @@ namespace DsLine.Core.RabbitMQ
                 }
             });
         }
-        
+
         // RabbitMQ retry that will publish a message to the retry queue.
         // Keep in mind that it might get processed by the other services using the same routing key and wildcards.
         private async Task<Acknowledgement> TryHandleWithRequeuingAsync<TMessage>(TMessage message,
@@ -165,7 +194,7 @@ namespace DsLine.Core.RabbitMQ
                 if (exception is DShopException dShopException && onError != null)
                 {
                     var rejectedEvent = onError(message, dShopException);
-                    await _busClient.PublishAsync(rejectedEvent, ctx => ctx.UseMessageContext(correlationContext));
+                    await _listBusClient.First().PublishAsync(rejectedEvent, ctx => ctx.UseMessageContext(correlationContext));
                     _logger.LogInformation($"Published a rejected event: '{rejectedEvent.GetType().Name}' " +
                                            $"for the message: '{messageName}' with correlation id: '{correlationContext.Id}'.");
 
@@ -174,7 +203,7 @@ namespace DsLine.Core.RabbitMQ
 
                 if (correlationContext.Retries >= _retries)
                 {
-                    await _busClient.PublishAsync(RejectedEvent.For(messageName),
+                    await _listBusClient.First().PublishAsync(RejectedEvent.For(messageName),
                         ctx => ctx.UseMessageContext(correlationContext));
 
                     throw new Exception($"Unable to handle a message: '{messageName}' " +
