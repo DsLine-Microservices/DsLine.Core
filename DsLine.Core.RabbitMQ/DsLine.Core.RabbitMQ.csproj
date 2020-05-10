@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <PackageId>DsLine.Core.RabbitMQ</PackageId>
-    <Version>1.0.40</Version>
+    <Version>1.0.44</Version>
     <Authors>DsLine</Authors>
     <Company>GitHub</Company>
     <PackageDescription>This package adds an Octocat!</PackageDescription>
@@ -23,6 +23,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.DataAnnotations" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Formatters.Json" Version="2.2.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.0.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.0.3" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="3.1.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.1.0" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="3.1.0" />
@@ -46,9 +48,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Context\" />
     <Folder Include="Messages\" />
     <Folder Include="Handlers\" />
     <Folder Include="Type\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\DsLine.Core.DbContexts\DsLine.Core.DbContexts.csproj" />
   </ItemGroup>
 
 </Project>

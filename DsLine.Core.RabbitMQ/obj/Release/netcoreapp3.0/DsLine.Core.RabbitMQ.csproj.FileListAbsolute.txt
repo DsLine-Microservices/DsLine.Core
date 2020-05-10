@@ -6,3 +6,6 @@ C:\Users\frabr\source\repos\DsLine-MicroservicesGIT\DsLine.Core\DsLine.Core.Rabb
 C:\Users\frabr\source\repos\DsLine-MicroservicesGIT\DsLine.Core\DsLine.Core.RabbitMQ\obj\Release\netcoreapp3.0\DsLine.Core.RabbitMQ.dll
 C:\Users\frabr\source\repos\DsLine-MicroservicesGIT\DsLine.Core\DsLine.Core.RabbitMQ\obj\Release\netcoreapp3.0\DsLine.Core.RabbitMQ.pdb
 C:\Users\frabr\source\repos\DsLine-MicroservicesGIT\DsLine.Core\DsLine.Core.RabbitMQ\obj\Release\netcoreapp3.0\DsLine.Core.RabbitMQ.csprojAssemblyReference.cache
+C:\Users\frabr\source\repos\DsLine-MicroservicesGIT\DsLine.Core\DsLine.Core.RabbitMQ\bin\Release\netcoreapp3.0\DsLine.Core.DbContexts.dll
+C:\Users\frabr\source\repos\DsLine-MicroservicesGIT\DsLine.Core\DsLine.Core.RabbitMQ\bin\Release\netcoreapp3.0\DsLine.Core.DbContexts.pdb
+C:\Users\frabr\source\repos\DsLine-MicroservicesGIT\DsLine.Core\DsLine.Core.RabbitMQ\obj\Release\netcoreapp3.0\DsLine.Core.RabbitMQ.csproj.CopyComplete

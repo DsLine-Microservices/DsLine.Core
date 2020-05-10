@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 using Autofac;
 using DShop.Common.Jaeger;
+using DsLine.Core.DbContexts;
 using DsLine.Core.Handlers;
 using DsLine.Core.Jaeger;
 using DsLine.Core.Messages;
@@ -15,10 +11,14 @@ using RawRabbit;
 using RawRabbit.Common;
 using RawRabbit.Configuration;
 using RawRabbit.Enrichers.MessageContext;
-using RawRabbit.Extensions.Client;
 using RawRabbit.Instantiation;
 using RawRabbit.Pipe;
 using RawRabbit.Pipe.Middleware;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DsLine.Core.RabbitMQ
 {
@@ -78,15 +78,19 @@ namespace DsLine.Core.RabbitMQ
             {
                 List<IInstanceFactory> instanceFactories = new List<IInstanceFactory>();
 
-              //  var options = context.Resolve<RabbitMqOptions>();
-              //  var configuration = context.Resolve<RawRabbitConfiguration>();
+                //  var options = context.Resolve<RabbitMqOptions>();
+                //  var configuration = context.Resolve<RawRabbitConfiguration>();
                 var listoptions = context.Resolve<List<RabbitMqOptions>>();
-              //  var namingConventions = new CustomNamingConventions(options.Namespace);
+                //  var namingConventions = new CustomNamingConventions(options.Namespace);
                 var tracer = context.Resolve<ITracer>();
+               
                 if (listoptions != null)
                 {
+
                     foreach (var item in listoptions)
                     {
+                        var dbContext = context.Resolve<IBaseDbContext>();
+
                         IInstanceFactory instanceFactory = RawRabbit.Instantiation.RawRabbitFactory.CreateInstanceFactory(new RawRabbitOptions
                         {
                             DependencyInjection = ioc =>
@@ -95,7 +99,17 @@ namespace DsLine.Core.RabbitMQ
                                 ioc.AddSingleton(item as RawRabbitConfiguration);
                                 ioc.AddSingleton<INamingConventions>(new CustomNamingConventions(item.Namespace));
                                 ioc.AddSingleton(tracer);
-                                
+
+                                ioc.AddSingleton(dbContext);
+                                // ioc.AddSingleton<BaseDbContext>(;
+
+                                //ioc.AddTransient<, BaseDbContext>(provider =>
+                                //{
+                                //    //resolve another classes from DI
+                                //    var anyOtherClass = provider.GetService<BaseDbContext>();
+
+                                //    return new BaseDbContext();
+                                //});
                             },
                             Plugins = p => p
                                 .UseAttributeRouting()
@@ -110,14 +124,15 @@ namespace DsLine.Core.RabbitMQ
                     }
                 }
 
-           
+
                 return instanceFactories;
             }).SingleInstance();
-            builder.Register(context => { 
+            builder.Register(context =>
+            {
                 List<RawRabbit.IBusClient> busClients = new List<RawRabbit.IBusClient>();
                 context.Resolve<List<IInstanceFactory>>().ForEach(x => busClients.Add(x.Create()));
                 return busClients;
-                });
+            });
         }
 
         private class CustomNamingConventions : NamingConventions

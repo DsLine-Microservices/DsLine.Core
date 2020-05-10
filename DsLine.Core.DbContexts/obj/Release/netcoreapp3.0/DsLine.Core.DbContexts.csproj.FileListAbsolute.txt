@@ -1,0 +1,7 @@
+C:\Users\frabr\source\repos\DsLine-MicroservicesGIT\DsLine.Core\DsLine.Core.DbContexts\bin\Release\netcoreapp3.0\DsLine.Core.DbContexts.deps.json
+C:\Users\frabr\source\repos\DsLine-MicroservicesGIT\DsLine.Core\DsLine.Core.DbContexts\bin\Release\netcoreapp3.0\DsLine.Core.DbContexts.dll
+C:\Users\frabr\source\repos\DsLine-MicroservicesGIT\DsLine.Core\DsLine.Core.DbContexts\bin\Release\netcoreapp3.0\DsLine.Core.DbContexts.pdb
+C:\Users\frabr\source\repos\DsLine-MicroservicesGIT\DsLine.Core\DsLine.Core.DbContexts\obj\Release\netcoreapp3.0\DsLine.Core.DbContexts.AssemblyInfoInputs.cache
+C:\Users\frabr\source\repos\DsLine-MicroservicesGIT\DsLine.Core\DsLine.Core.DbContexts\obj\Release\netcoreapp3.0\DsLine.Core.DbContexts.AssemblyInfo.cs
+C:\Users\frabr\source\repos\DsLine-MicroservicesGIT\DsLine.Core\DsLine.Core.DbContexts\obj\Release\netcoreapp3.0\DsLine.Core.DbContexts.dll
+C:\Users\frabr\source\repos\DsLine-MicroservicesGIT\DsLine.Core\DsLine.Core.DbContexts\obj\Release\netcoreapp3.0\DsLine.Core.DbContexts.pdb
